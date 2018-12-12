@@ -3,7 +3,7 @@
     package="com.example.thibautgoutel.HappyOrNotHappy">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -37,6 +37,42 @@
 
         <activity
             android:name="com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.NeutralReceiver"
+            android:label="Image"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.thibautgoutel.HappyOrNotHappy.Main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.HappyReceiver"
+            android:label="Image"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.thibautgoutel.HappyOrNotHappy.Main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.NotHappyReceiver"
+            android:label="Image"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.thibautgoutel.HappyOrNotHappy.Main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryHappyReceiver"
+            android:label="Image"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.thibautgoutel.HappyOrNotHappy.Main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryNotHappyReceiver"
             android:label="Image"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data

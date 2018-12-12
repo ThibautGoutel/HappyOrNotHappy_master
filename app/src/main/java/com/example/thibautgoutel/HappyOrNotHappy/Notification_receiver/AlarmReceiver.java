@@ -9,8 +9,10 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -80,6 +82,10 @@ public class AlarmReceiver extends BroadcastReceiver
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
                 Calendar calendar = Calendar.getInstance();
                 long time_real = calendar.getTimeInMillis();
+
+                //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ct);
+                intervalle = settings.getInt("intervalle", 6*60*1000);
 
                 Log.d("Intervalle = ", String.valueOf(intervalle));
 

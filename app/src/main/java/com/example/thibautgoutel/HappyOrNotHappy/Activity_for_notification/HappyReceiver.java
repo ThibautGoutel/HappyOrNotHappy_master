@@ -54,20 +54,20 @@ public class HappyReceiver extends AppCompatActivity {
         //Creation d'une humeur à partir de l'id de l'utilisateur et de son humeur
         MOOD mood = new MOOD(mood_name, id_user);
 
-        String[] tab = new String[3];
-        tab[0] = id_user;
-        tab[1] = mood_name;
-        tab[2] = Calendar.getInstance().getTime().toString();
-
         //Ajout de l'humeur dans la base de donnée
-        Send objSend = new Send();
-        objSend.execute(tab);
-
         database.addMood(mood);
 
-        //TODO//////////////////Verification de la connection internet/////
-        //TODO/////////////////Si il y a connection => Ajout de la nouvelle partie dans le fichier csv///
-        //Exportation de la base de donnée dans un fichier .csv (4 colonnes à exporter : id, id_user, time, moodd
+        //Création du message à mettre dans la base de donnée du serveur
+        /*String[] tab = new String[3];
+        tab[0] = id_user;
+        tab[1] = mood_name;
+        tab[2] = Calendar.getInstance().getTime().toString();*/
+
+        //Envoi de l'humeur dans la base de donnée du serveur
+        Send objSend = new Send();
+        objSend.setMyBDD(database);
+        objSend.execute("");
+
         exportDB(database, 4);
 
         //Recuperation de l'heure actuel en milliseconde
