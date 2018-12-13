@@ -14,14 +14,18 @@ import java.util.TimerTask;
  * Created by fabio on 30/01/2016.
  */
 public class SensorService extends Service {
+
     public int counter=0;
+    private Timer timer;
+    private TimerTask timerTask;
+
     public SensorService(Context applicationContext) {
         super();
         Log.i("HERE", "here I am!");
     }
 
-    public SensorService() {
-    }
+    public SensorService() {}
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -30,17 +34,14 @@ public class SensorService extends Service {
     }
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.i("EXIT", "ondestroy!");
         Intent broadcastIntent = new Intent(this, AlarmReceiver.class);
         broadcastIntent.putExtra("service", true);
         startActivity(broadcastIntent);
         stoptimertask();
+        super.onDestroy();
     }
 
-    private Timer timer;
-    private TimerTask timerTask;
-    long oldTime=0;
     public void startTimer() {
         //set a new Timer
         timer = new Timer();

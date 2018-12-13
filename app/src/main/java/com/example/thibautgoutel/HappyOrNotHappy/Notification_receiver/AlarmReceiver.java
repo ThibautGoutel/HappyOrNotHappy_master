@@ -17,12 +17,14 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.HappyReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.NeutralReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.NotHappyReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryHappyReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryNotHappyReceiver;
+import com.example.thibautgoutel.HappyOrNotHappy.Base_de_donnee.MyBDD;
 import com.example.thibautgoutel.HappyOrNotHappy.R;
 
 import java.util.Calendar;
@@ -47,12 +49,6 @@ public class AlarmReceiver extends BroadcastReceiver
     {
         Intent background = new Intent(context, SensorService.class);
         context.startService(background);
-/*
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
-         wl.acquire();
-
-        wl.release();*/
 
         ct = context;
         it = intent;
@@ -83,11 +79,13 @@ public class AlarmReceiver extends BroadcastReceiver
                 Calendar calendar = Calendar.getInstance();
                 long time_real = calendar.getTimeInMillis();
 
+                synchroIdUser();
+
                 //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ct);
                 intervalle = settings.getInt("intervalle", 6*60*1000);
 
-                Log.d("Intervalle = ", String.valueOf(intervalle));
+                Log.d("ERROR", String.valueOf(intervalle));
 
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                 intent = new Intent(context, AlarmReceiver.class);
@@ -96,6 +94,9 @@ public class AlarmReceiver extends BroadcastReceiver
                 intent.putExtra("verif", true);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 234324243, intent, 0);
                 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
+
+                background = new Intent(context, SensorService.class);
+                context.startService(background);
             }
         }
     }
@@ -188,5 +189,31 @@ public class AlarmReceiver extends BroadcastReceiver
 
         //Demarage de la notification
         notificationManager.notify(notificationId, notifyPlayer);
+    }
+
+    public void synchroIdUser()
+    {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ct);
+        String id = settings.getString("id_user", "error");
+
+        String id_user;
+
+        if(id.equals("error"))
+        {
+            MyBDD myBDD = new MyBDD(ct);
+            id_user = String.valueOf(myBDD.getMood(0).getId());
+
+            SharedPreferences.Editor edit = settings.edit();
+            edit.putString("id_user", id_user);
+            edit.apply();
+        }
+        else
+        {
+            id_user = id;
+
+            SharedPreferences.Editor edit = settings.edit();
+            edit.putString("id_user", id_user);
+            edit.apply();
+        }
     }
 }

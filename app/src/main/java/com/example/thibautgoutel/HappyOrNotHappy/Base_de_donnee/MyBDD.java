@@ -82,9 +82,10 @@ public class MyBDD extends SQLiteOpenHelper {
 
     //Suppression de toute la base de donnée
     public void deletAll() {
-        String countQuery = "DELETE FROM " + TABLE_Application;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
+        //String countQuery = "DELETE FROM " + TABLE_Application + " ;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_Application);
+        //Cursor cursor = db.rawQuery(countQuery, null);
         db.close();
     }
 

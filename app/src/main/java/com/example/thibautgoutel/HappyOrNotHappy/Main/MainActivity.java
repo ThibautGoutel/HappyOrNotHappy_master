@@ -3,13 +3,10 @@ package com.example.thibautgoutel.HappyOrNotHappy.Main;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -22,7 +19,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.thibautgoutel.HappyOrNotHappy.Notification_receiver.AlarmReceiver;
-import com.example.thibautgoutel.HappyOrNotHappy.Notification_receiver.BackgroundService;
 import com.example.thibautgoutel.HappyOrNotHappy.R;
 
 import org.apache.http.HttpResponse;
@@ -33,10 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Calendar;
-
-import static android.os.Environment.getExternalStorageDirectory;
 
 // TUTORIALS http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/
 
@@ -139,8 +132,6 @@ public class MainActivity extends AppCompatActivity {
         long time_real;
         if (((ToggleButton) view).isChecked())
         {
-            server_connection();
-
             //Reception de l'intervalle afficher
             EditText editIntervalle = findViewById(R.id.EditIntervalle);
             if(!editIntervalle.getText().toString().equals(""))
@@ -181,32 +172,6 @@ public class MainActivity extends AppCompatActivity {
             pendingIntent = PendingIntent.getBroadcast( this.getApplicationContext(), 234324243, intent, 0);
 
             alarmManager.cancel(pendingIntent);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void server_connection ()
-    {
-        String url = "http://studentsdev.freeboxos.fr/public";
-        // Creation du fichier csv dans la mémmoire interne du téléphone
-        File[] SDCARD = this.getExternalFilesDirs("");
-        File mFile = new File(SDCARD[0] + "/" + "HappyOrNotHappy"); //SDCARD[0] => memoire interne, SDCARD[1] => memoire externe
-        mFile.mkdir();
-        File file = new File(mFile, "doc.csv");
-        try {
-            HttpClient httpclient = new DefaultHttpClient();
-
-            HttpPost httppost = new HttpPost(url);
-            InputStreamEntity reqEntity = new InputStreamEntity(
-                    new FileInputStream(file), -1);
-            reqEntity.setContentType("binary/octet-stream");
-            reqEntity.setChunked(true); // Send in multiple parts if needed
-            httppost.setEntity(reqEntity);
-            HttpResponse response = httpclient.execute(httppost);
-            //Do something with response...
-
-        } catch (Exception e) {
-            // show error
         }
     }
 }
