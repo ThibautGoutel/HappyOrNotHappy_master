@@ -3,6 +3,7 @@ package com.example.thibautgoutel.HappyOrNotHappy.Main;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 1);
 
         //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences settings = getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = settings.edit();
         edit.putInt("intervalle", intervalle);
         edit.apply();
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     {
         ToggleButton toggleButton = findViewById(R.id.toggleButton);
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences settings = getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
         String notif = settings.getString("notification", "error");
 
         if(notif.equals("error") || notif.equals("desactive"))
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void synchroIdUser()
     {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences settings = getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
         String id = settings.getString("id_user", "error");
 
         TextView textView3 = findViewById(R.id.textView3);
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences settings = getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = settings.edit();
             edit.putInt("intervalle", intervalle);
             edit.apply();
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences settings = getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = settings.edit();
             edit.putString("notification", "desactive");
             edit.apply();

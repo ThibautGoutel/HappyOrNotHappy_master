@@ -82,7 +82,7 @@ public class AlarmReceiver extends BroadcastReceiver
                 synchroIdUser();
 
                 //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ct);
+                SharedPreferences settings = ct.getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
                 intervalle = settings.getInt("intervalle", 6*60*1000);
 
                 Log.d("ERROR", String.valueOf(intervalle));
@@ -193,7 +193,7 @@ public class AlarmReceiver extends BroadcastReceiver
 
     public void synchroIdUser()
     {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ct);
+        SharedPreferences settings = ct.getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
         String id = settings.getString("id_user", "error");
 
         String id_user;
