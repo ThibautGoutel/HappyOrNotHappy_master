@@ -1,5 +1,6 @@
 package com.example.thibautgoutel.HappyOrNotHappy.Notification_receiver;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -25,8 +27,15 @@ import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.NotHa
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryHappyReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Activity_for_notification.VeryNotHappyReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.Base_de_donnee.MyBDD;
+import com.example.thibautgoutel.HappyOrNotHappy.Main.MainActivity;
 import com.example.thibautgoutel.HappyOrNotHappy.R;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -36,12 +45,9 @@ public class AlarmReceiver extends BroadcastReceiver
     Context ct;
     Intent it;
 
-    String[] list_reasons = {"Pas de raisons", "Raisons personnelles", "Raisons professionnelles"};
-
     //Parametre de notification
     private Notification notifyPlayer;
     public static int notificationId = 100;
-
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -53,11 +59,9 @@ public class AlarmReceiver extends BroadcastReceiver
         ct = context;
         it = intent;
 
-        int intervalle = it.getIntExtra("intervalle",-1);
+        int intervalle = Integer.parseInt(readData("intervalle"));
 
-        if(intent.getBooleanExtra("verif",false)) {
-            showCustomNotification(context, intent);
-        }
+        showCustomNotification(context, intent);
 
         if(intent.getBooleanExtra("service",false)) {
             Calendar calendar = Calendar.getInstance();
@@ -67,37 +71,8 @@ public class AlarmReceiver extends BroadcastReceiver
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             intent = new Intent(context, AlarmReceiver.class);
-            intent.putExtra("id_user", intent.getStringExtra("id_user"));
-            intent.putExtra("intervalle", intervalle);
-            intent.putExtra("verif", true);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 234324243, intent, 0);
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
-        }
-
-        if(intent.getAction() != null) {
-            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-                Calendar calendar = Calendar.getInstance();
-                long time_real = calendar.getTimeInMillis();
-
-                synchroIdUser();
-
-                //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
-                SharedPreferences settings = ct.getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
-                intervalle = settings.getInt("intervalle", 6*60*1000);
-
-                Log.d("ERROR", String.valueOf(intervalle));
-
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("id_user", intent.getStringExtra("id_user"));
-                intent.putExtra("intervalle", intervalle);
-                intent.putExtra("verif", true);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 234324243, intent, 0);
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
-
-                background = new Intent(context, SensorService.class);
-                context.startService(background);
-            }
         }
     }
 
@@ -107,32 +82,22 @@ public class AlarmReceiver extends BroadcastReceiver
 
         Intent veryHappyReceiver = new Intent(ct, VeryHappyReceiver.class);
         veryHappyReceiver.putExtra("mood", ct.getString(R.string.very_happy));
-        veryHappyReceiver.putExtra("id_user", it.getStringExtra("id_user"));
-        veryHappyReceiver.putExtra("intervalle", it.getIntExtra("intervalle",-1));
         PendingIntent pendingVeryHappyIntent = PendingIntent.getActivity(ct, 0, veryHappyReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent happyReceiver = new Intent(ct, HappyReceiver.class);
         happyReceiver.putExtra("mood", ct.getString(R.string.happy));
-        happyReceiver.putExtra("id_user", it.getStringExtra("id_user"));
-        happyReceiver.putExtra("intervalle", it.getIntExtra("intervalle",-1));
         PendingIntent pendingHappyIntent = PendingIntent.getActivity(ct, 0, happyReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent neutralReceiver = new Intent(ct, NeutralReceiver.class);
         neutralReceiver.putExtra("mood", ct.getString(R.string.neutral));
-        neutralReceiver.putExtra("id_user", it.getStringExtra("id_user"));
-        neutralReceiver.putExtra("intervalle", it.getIntExtra("intervalle",-1));
         PendingIntent pendingNeutralIntent = PendingIntent.getActivity(ct, 0, neutralReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent notHappyReceiver = new Intent(ct, NotHappyReceiver.class);
         notHappyReceiver.putExtra("mood", ct.getString(R.string.not_happy));
-        notHappyReceiver.putExtra("id_user", it.getStringExtra("id_user"));
-        notHappyReceiver.putExtra("intervalle", it.getIntExtra("intervalle",-1));
         PendingIntent pendingNotHapyIntent = PendingIntent.getActivity(ct, 0, notHappyReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent veryNotHappyReceiver = new Intent(ct, VeryNotHappyReceiver.class);
         veryNotHappyReceiver.putExtra("mood", ct.getString(R.string.very_not_happy));
-        veryNotHappyReceiver.putExtra("id_user", it.getStringExtra("id_user"));
-        veryNotHappyReceiver.putExtra("intervalle", it.getIntExtra("intervalle",-1));
         PendingIntent pendingVeryNotHapyIntent = PendingIntent.getActivity(ct, 0, veryNotHappyReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Creation des listener sur les images en les reliant au Intentes créer auparavant
@@ -191,29 +156,27 @@ public class AlarmReceiver extends BroadcastReceiver
         notificationManager.notify(notificationId, notifyPlayer);
     }
 
-    public void synchroIdUser()
+    public String readData(String file)
     {
-        SharedPreferences settings = ct.getSharedPreferences( "PrivateSettings" , Context.MODE_PRIVATE);
-        String id = settings.getString("id_user", "error");
+        String textFromFile = "";
+        // Gets the file from the primary external storage space of the
+        // current application.
+        File testFile = new File(ct.getExternalFilesDir(null), file + ".txt");
+        if (testFile != null) {
+            BufferedReader reader;
+            try {
+                reader = new BufferedReader(new FileReader(testFile));
+                String line;
 
-        String id_user;
-
-        if(id.equals("error"))
-        {
-            MyBDD myBDD = new MyBDD(ct);
-            id_user = String.valueOf(myBDD.getMood(0).getId());
-
-            SharedPreferences.Editor edit = settings.edit();
-            edit.putString("id_user", id_user);
-            edit.apply();
+                while ((line = reader.readLine()) != null) {
+                    textFromFile += line.toString();
+                }
+                reader.close();
+            } catch (Exception e) {
+                Log.e("ReadWriteFile", "Unable to read the " + file + ".txt file.");
+                return "error";
+            }
         }
-        else
-        {
-            id_user = id;
-
-            SharedPreferences.Editor edit = settings.edit();
-            edit.putString("id_user", id_user);
-            edit.apply();
-        }
+        return textFromFile;
     }
 }

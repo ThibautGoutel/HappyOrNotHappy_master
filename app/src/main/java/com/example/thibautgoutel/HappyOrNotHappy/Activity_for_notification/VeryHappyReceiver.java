@@ -18,7 +18,9 @@ import com.example.thibautgoutel.HappyOrNotHappy.Base_de_donnee.Send;
 import com.example.thibautgoutel.HappyOrNotHappy.Notification_receiver.AlarmReceiver;
 import com.example.thibautgoutel.HappyOrNotHappy.R;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 
 public class VeryHappyReceiver extends AppCompatActivity {
@@ -31,13 +33,13 @@ public class VeryHappyReceiver extends AppCompatActivity {
 
         //Initialisation des variables transmisent depuis le MainActivité
         String mood_name = getIntent().getStringExtra("mood");  //Humeur
-        String id_user = getIntent().getStringExtra("id_user"); //Identificateur de l'utilisateur
+        String id_user = readData("id_user"); //Identificateur de l'utilisateur
 
         //Creation de la base de donnée
         MyBDD database = new MyBDD(this);
 
         //Creation d'une humeur à partir de l'id de l'utilisateur et de son humeur
-        MOOD mood = new MOOD(mood_name, id_user);
+        MOOD mood = new MOOD(mood_name, id_user.substring(7));
 
         //Ajout de l'humeur dans la base de donnée
         database.addMood(mood);
@@ -96,5 +98,31 @@ public class VeryHappyReceiver extends AppCompatActivity {
         } catch (Exception sqlEx) {
             Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }
+    }
+
+
+    public String readData(String file)
+    {
+        String textFromFile = "";
+        // Gets the file from the primary external storage space of the
+        // current application.
+        File testFile = new File(this.getExternalFilesDir(null), file + ".txt");
+        if (testFile != null) {
+            BufferedReader reader;
+            try {
+                reader = new BufferedReader(new FileReader(testFile));
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    textFromFile += line.toString();
+                    textFromFile += "\n";
+                }
+                reader.close();
+            } catch (Exception e) {
+                Log.e("ReadWriteFile", "Unable to read the " + file + ".txt file.");
+                return "error";
+            }
+        }
+        return textFromFile;
     }
 }
