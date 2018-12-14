@@ -63,10 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 },
                 1);
 
-        Intent it = getIntent();
+        String intervalle_string = readData("intervalle");
+        if (intervalle_string.equals("error"))
+        {
+            writeData("intervalle", String.valueOf(intervalle));
+            EditText editIntervalle = findViewById(R.id.EditIntervalle);
+            editIntervalle.setText(intervalle / 60 / 1000);
+        }
+        else
+        {
+            EditText editIntervalle = findViewById(R.id.EditIntervalle);
+            editIntervalle.setText(Integer.parseInt(intervalle_string) / 60 / 1000);
+        }
 
-        //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
-        writeData("intervalle", String.valueOf(intervalle));
+
+
+        Intent it = getIntent();
 
         //Creation de l'alarme
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -91,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
 
             finish();
+        }
+        else
+        {
+            //Creation de l'intervalle en SharedPreference pour qu'il soit accessible de chaques classe
+            writeData("intervalle", String.valueOf(intervalle));
         }
     }
 
@@ -174,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
             //Création de l'intent pour prévoir la notification et passage des variables
             Intent intent = new Intent(this, AlarmReceiver.class);
-            intent.putExtra("verif",false);
             pendingIntent = PendingIntent.getBroadcast( this.getApplicationContext(), 234324243, intent, 0);
 
             alarmManager.cancel(pendingIntent);
