@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             EditText editIntervalle = findViewById(R.id.EditIntervalle);
-            editIntervalle.setText(Integer.parseInt(intervalle_string) / 60 / 1000);
+            editIntervalle.setHint(String.valueOf(Integer.parseInt(intervalle_string) / 60 / 1000));
         }
 
 

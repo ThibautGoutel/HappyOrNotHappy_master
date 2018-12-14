@@ -10,6 +10,10 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.thibautgoutel.HappyOrNotHappy.Base_de_donnee.CSVWriter;
 import com.example.thibautgoutel.HappyOrNotHappy.Base_de_donnee.MOOD;
@@ -30,7 +34,6 @@ public class VeryHappyReceiver extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receiver_layout);
-
         //Initialisation des variables transmisent depuis le MainActivité
         String mood_name = getIntent().getStringExtra("mood");  //Humeur
         String id_user = readData("id_user"); //Identificateur de l'utilisateur
