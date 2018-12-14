@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main3);
 
         ActivityCompat.requestPermissions(this,
                 new String[]{
@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         //Synchronisation du bouton pour activé ou desactivé la notification
-        synchroNotification();
+        //synchroNotification();
 
         //Synchronisation de la variable globale correspondant à l'id de l'utilisateur
-        synchroIdUser();
+        //synchroIdUser();
 
         //Création de l'intent pour prévoir la notification et passage des variables
         Intent intent = new Intent(this, AlarmReceiver.class);
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getBroadcast( this.getApplicationContext(), 234324243, intent, 0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+   /*@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void synchroNotification()
     {
         ToggleButton toggleButton = findViewById(R.id.toggleButton);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         {
             id_user = id;
         }
-    }
+    }*/
 
     public static String getId_user()
     {

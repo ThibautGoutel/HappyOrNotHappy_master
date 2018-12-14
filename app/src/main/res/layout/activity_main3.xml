@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#212121">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6"
+        android:text="@string/texte_acceuil"
+        android:gravity="center"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="#cacaca"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-condensed"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:text="Quelle est votre humeur du moment ? \nRépondez ci-dessous : "
+        android:textColor="#cacaca"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:fontFamily="sans-serif-condensed" />
+
+    <GridLayout
+        android:columnCount="5"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/very_not_happy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/very_not_happy" />
+
+        <Button
+            android:id="@+id/not_happy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/not_happy" />
+
+        <Button
+            android:id="@+id/neutral"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/neutral" />
+
+        <Button
+            android:id="@+id/happy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/happy" />
+
+        <Button
+            android:id="@+id/very_happy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/very_happy" />
+
+
+    </GridLayout>
+
+</LinearLayout>
