@@ -68,15 +68,13 @@ public class MainActivity extends AppCompatActivity {
         {
             writeData("intervalle", String.valueOf(intervalle));
             EditText editIntervalle = findViewById(R.id.EditIntervalle);
-            editIntervalle.setText(intervalle / 60 / 1000);
+            editIntervalle.setHint(String.valueOf(intervalle / 60 / 1000));
         }
         else
         {
             EditText editIntervalle = findViewById(R.id.EditIntervalle);
             editIntervalle.setHint(String.valueOf(Integer.parseInt(intervalle_string) / 60 / 1000));
         }
-
-
 
         Intent it = getIntent();
 
