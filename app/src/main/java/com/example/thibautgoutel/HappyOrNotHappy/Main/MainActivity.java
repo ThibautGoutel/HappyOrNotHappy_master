@@ -39,12 +39,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 
-// TUTORIALS http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/
-
 public class MainActivity extends AppCompatActivity {
 
     private PendingIntent pendingIntent;
     private AlarmManager alarmManager;
+    //L'intervalle n'est plus utilisé mais je ne l'ai pas supprimé pour pouvoir le réutiliser au cas ou
     private static int intervalle = 6 * 60 * 60 * 1000;
     private static String id_user;
 
@@ -95,10 +94,14 @@ public class MainActivity extends AppCompatActivity {
         {
             intervalle = Integer.parseInt(readData("intervalle"));
 
+            // Set the alarm to start at 7:45 AM
             Calendar calendar = Calendar.getInstance();
-            long time_real = calendar.getTimeInMillis();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 7);
+            calendar.set(Calendar.MINUTE, 45);
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
 
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
 
             finish();
         }

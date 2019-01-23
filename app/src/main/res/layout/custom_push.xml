@@ -24,31 +24,31 @@
             android:id="@+id/very_not_happy"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/very_not_happy" />
+            android:background="@drawable/_verynothappy" />
 
         <Button
             android:id="@+id/not_happy"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/not_happy" />
+            android:background="@drawable/_nothappy" />
 
         <Button
             android:id="@+id/neutral"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/neutral" />
+            android:background="@drawable/_neutral" />
 
         <Button
             android:id="@+id/happy"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/happy" />
+            android:background="@drawable/_happy" />
 
         <Button
             android:id="@+id/very_happy"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/very_happy" />
+            android:background="@drawable/_veryhappy" />
 
 
     </GridLayout>
