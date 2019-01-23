@@ -15,8 +15,13 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -37,6 +42,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -130,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
         else Log.e("MainActivity", "Erreur de preference");
     }
 
+    RadioButton m;
+    RadioButton f;
+    Button save;
+    Spinner year;
+    AlertDialog alertDialog;
+    View dialogView;
+
     public void synchroIdUser()
     {
         String id = readData("id_user");
@@ -138,10 +151,59 @@ public class MainActivity extends AppCompatActivity {
 
         if(id.equals("error"))
         {
-            Calendar calendar = Calendar.getInstance();
-            id_user = String.valueOf(calendar.getTimeInMillis());
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+// ...Irrelevant code for customizing the buttons and title
+            LayoutInflater inflater = this.getLayoutInflater();
+            dialogView = inflater.inflate(R.layout.alert_dialog, null);
+            dialogBuilder.setView(dialogView);
 
-            writeData("id_user", id_user);
+            m = dialogView.findViewById(R.id.male);
+            f = dialogView.findViewById(R.id.female);
+            year = dialogView.findViewById(R.id.year);
+            save = dialogView.findViewById(R.id.save);
+
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String genre;
+                    String year_selected;
+
+                    if(m.isSelected())
+                    {
+                        genre = "m";
+                    }
+                    else if (f.isSelected())
+                    {
+                        genre = "f";
+                    }
+                    else
+                    {
+                        alertDialog.show();
+                        return;
+                    }
+
+                    year_selected = (String) year.getSelectedItem();
+
+                    Calendar calendar = Calendar.getInstance();
+                    id_user = String.valueOf(calendar.getTimeInMillis());
+
+                    writeData("id_user", id_user + genre + year_selected);
+                }
+            });
+
+            ArrayList<String> listYear = new ArrayList<String>();
+
+            for (int i = Calendar.getInstance().get(Calendar.YEAR); i > Calendar.getInstance().get(Calendar.YEAR) - 100; i--)
+            {
+                listYear.add(String.valueOf(i));
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listYear);
+
+            year.setAdapter(adapter);
+
+            alertDialog = dialogBuilder.create();
+            alertDialog.show();
         }
         else
         {
