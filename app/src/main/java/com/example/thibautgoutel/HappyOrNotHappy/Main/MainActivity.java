@@ -16,12 +16,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         ActivityCompat.requestPermissions(this,
                 new String[]{
@@ -68,26 +72,11 @@ public class MainActivity extends AppCompatActivity {
                 },
                 1);
 
-        String intervalle_string = readData("intervalle");
-        if (intervalle_string.equals("error"))
-        {
-            writeData("intervalle", String.valueOf(intervalle));
-            EditText editIntervalle = findViewById(R.id.EditIntervalle);
-            editIntervalle.setHint(String.valueOf(intervalle / 60 / 1000));
-        }
-        else
-        {
-            EditText editIntervalle = findViewById(R.id.EditIntervalle);
-            editIntervalle.setHint(String.valueOf(Integer.parseInt(intervalle_string) / 60 / 1000));
-        }
 
         Intent it = getIntent();
 
         //Creation de l'alarme
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        //Synchronisation du bouton pour activé ou desactivé la notification
-        synchroNotification();
 
         //Synchronisation de la variable globale correspondant à l'id de l'utilisateur
         synchroIdUser();
@@ -118,22 +107,61 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void synchroNotification()
-    {
-        ToggleButton toggleButton = findViewById(R.id.toggleButton);
+    Switch mSwitch;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem switchItem = menu.findItem(R.id.toggleservice);
+        mSwitch = (Switch) switchItem.getActionView();
+
+        // First time will initialize with default value
         String notif = readData("notification");
 
         if(notif.equals("error") || notif.equals("desactive"))
         {
-            toggleButton.setChecked(false);
+            mSwitch.setChecked(false);
         }
         else if(notif.equals("active"))
         {
-            toggleButton.setChecked(true);
+            mSwitch.setChecked(true);
         }
-        else Log.e("MainActivity", "Erreur de preference");
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save new value
+                long time_real;
+                if (mSwitch.isChecked())
+                {
+
+                    writeData("notification", "active");
+
+                    Toast.makeText(MainActivity.this, "ALARM ON", Toast.LENGTH_SHORT).show();
+
+                    // Set the alarm to start at 7:45 AM
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(System.currentTimeMillis());
+                    calendar.set(Calendar.HOUR_OF_DAY, 12);
+                    calendar.set(Calendar.MINUTE, 17);
+                    //calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
+                }
+                else
+                {
+                    writeData("notification", "desactive");
+
+                    Toast.makeText(MainActivity.this, "ALARM OFF", Toast.LENGTH_SHORT).show();
+
+                    //Création de l'intent pour prévoir la notification et passage des variables
+                    Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                    pendingIntent = PendingIntent.getBroadcast( getApplicationContext(), 234324243, intent, 0);
+
+                    alarmManager.cancel(pendingIntent);
+                }
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     RadioButton m;
@@ -143,11 +171,41 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog alertDialog;
     View dialogView;
 
+    public void saveas(View v)
+    {
+        m = dialogView.findViewById(R.id.male);
+        f = dialogView.findViewById(R.id.female);
+
+        String genre;
+        String year_selected;
+
+        if(m.isChecked())
+        {
+            genre = "m";
+        }
+        else if (f.isChecked())
+        {
+            genre = "f";
+        }
+        else
+        {
+            alertDialog.show();
+            return;
+        }
+
+        year_selected = (String) year.getSelectedItem();
+
+        Calendar calendar = Calendar.getInstance();
+        id_user = String.valueOf(calendar.getTimeInMillis());
+
+        writeData("id_user", id_user.substring(6,12) + genre + year_selected);
+
+        alertDialog.cancel();
+    }
+
     public void synchroIdUser()
     {
         String id = readData("id_user");
-
-
 
         if(id.equals("error"))
         {
@@ -157,39 +215,7 @@ public class MainActivity extends AppCompatActivity {
             dialogView = inflater.inflate(R.layout.alert_dialog, null);
             dialogBuilder.setView(dialogView);
 
-            m = dialogView.findViewById(R.id.male);
-            f = dialogView.findViewById(R.id.female);
             year = dialogView.findViewById(R.id.year);
-            save = dialogView.findViewById(R.id.save);
-
-            save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String genre;
-                    String year_selected;
-
-                    if(m.isSelected())
-                    {
-                        genre = "m";
-                    }
-                    else if (f.isSelected())
-                    {
-                        genre = "f";
-                    }
-                    else
-                    {
-                        alertDialog.show();
-                        return;
-                    }
-
-                    year_selected = (String) year.getSelectedItem();
-
-                    Calendar calendar = Calendar.getInstance();
-                    id_user = String.valueOf(calendar.getTimeInMillis());
-
-                    writeData("id_user", id_user + genre + year_selected);
-                }
-            });
 
             ArrayList<String> listYear = new ArrayList<String>();
 
@@ -209,10 +235,8 @@ public class MainActivity extends AppCompatActivity {
         {
             id_user = id;
         }
-
-        TextView textView3 = findViewById(R.id.textView3);
-        textView3.setText("id user : " + id_user);
     }
+
 
     public static String getId_user()
     {
@@ -242,8 +266,8 @@ public class MainActivity extends AppCompatActivity {
             // Set the alarm to start at 7:45 AM
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, 7);
-            calendar.set(Calendar.MINUTE, 45);
+            calendar.set(Calendar.HOUR_OF_DAY, 11);
+            calendar.set(Calendar.MINUTE, 52);
             calendar.add(Calendar.DAY_OF_YEAR, 1);
 
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);

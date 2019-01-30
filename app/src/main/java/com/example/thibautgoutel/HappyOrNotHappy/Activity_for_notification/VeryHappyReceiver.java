@@ -42,7 +42,7 @@ public class VeryHappyReceiver extends AppCompatActivity {
         MyBDD database = new MyBDD(this);
 
         //Creation d'une humeur à partir de l'id de l'utilisateur et de son humeur
-        MOOD mood = new MOOD(mood_name, id_user.substring(7));
+        MOOD mood = new MOOD(mood_name, id_user);
 
         //Ajout de l'humeur dans la base de donnée
         database.addMood(mood);
