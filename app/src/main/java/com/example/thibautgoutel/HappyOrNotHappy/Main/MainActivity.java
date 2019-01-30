@@ -239,12 +239,14 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(MainActivity.this, "ALARM ON", Toast.LENGTH_SHORT).show();
 
+            // Set the alarm to start at 7:45 AM
             Calendar calendar = Calendar.getInstance();
-            time_real = calendar.getTimeInMillis();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 7);
+            calendar.set(Calendar.MINUTE, 45);
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
 
-            Log.d("Intervalle = ", String.valueOf(intervalle));
-
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time_real, intervalle, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
         }
         else
         {
