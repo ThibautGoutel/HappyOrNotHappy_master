@@ -8,6 +8,6 @@
     <string name="neutral">neutral</string>
     <string name="not_happy">not happy</string>
     <string name="very_not_happy">very not happy</string>
-    <string name="texte_acceuil">Cette application est à destination de la recherche. Elle enverra une notification automatiquement toutes les 6 heures pour connaitre votre humeur. Il vous suffiera dans un premier temps d\'activer les notifications en appuyant sur le bouton ci-dessus. Par la suite vous pourrez fermer l\'application et ne plus l\'allumer.  Merci !</string>
+    <string name="texte_acceuil">Cette application est à destination de la recherche. Elle enverra une notification automatiquement matin et soir. Il vous suffiera dans un premier temps d\'activer les notifications en appuyant sur le bouton ci-dessus. Par la suite vous pourrez fermer l\'application et ne plus l\'allumer.  Merci !</string>
 
 </resources>

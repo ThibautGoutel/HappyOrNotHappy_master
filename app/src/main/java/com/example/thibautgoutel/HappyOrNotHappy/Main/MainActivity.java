@@ -141,9 +141,8 @@ public class MainActivity extends AppCompatActivity {
                     // Set the alarm to start at 7:45 AM
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.set(Calendar.HOUR_OF_DAY, 12);
-                    calendar.set(Calendar.MINUTE, 17);
-                    //calendar.add(Calendar.DAY_OF_YEAR, 1);
+                    calendar.set(Calendar.HOUR_OF_DAY, 7);
+                    calendar.set(Calendar.MINUTE, 45);
 
                     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
                 }

@@ -30,7 +30,7 @@
             android:id="@+id/not_happy"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/_nothappy" />
+            android:background="@drawable/_verynothappy" />
 
         <Button
             android:id="@+id/neutral"
